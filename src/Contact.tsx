@@ -1,156 +1,129 @@
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { EMAIL, useLang } from "./i18n";
+import { LangFlag, TranslateIcon } from "./LangToggleIcons";
 
-export function Contact() {
+export function ContactBody() {
   const { t } = useLang();
-  const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
-    setSent(true);
-    window.setTimeout(() => setSent(false), 3000);
-    setForm({ name: "", email: "", subject: "", message: "" });
+    const subject = `${t("Mission —", "Mission —")}${form.subject}`.trim();
+    const body = [
+      t("Nom", "Name") + `: ${form.name}`,
+      `Email: ${form.email}`,
+      "",
+      form.message,
+    ].join("\n");
+    const href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
   }
 
   return (
-    <section id="contact" className="section contact-section">
-      <div className="container">
-        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <span className="eyebrow reveal" style={{ color: "var(--gold-light)" }}>
-            {t("Contact", "Contact")}
-          </span>
-          <h2 className="section-title reveal" style={{ color: "var(--white)" }}>
-            {t("Travaillons ensemble", "Let's work together")}
-          </h2>
-          <hr className="gold-line reveal" style={{ margin: "1.5rem auto" }} />
+    <div className="contact__body">
+      <h3 className="contact__promise">
+        {t(
+          "Vous repartez avec une priorité: SEO, contenu ou social.",
+          "You leave with one priority: SEO, content, or social.",
+        )}
+      </h3>
+
+      <div className="contact__grid">
+        <div>
+          <dl className="contact__meta">
+            <div>
+              <dt>{t("Localisation", "Location")}</dt>
+              <dd>{t("Fès, Maroc", "Fès, Morocco")}</dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd>
+                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              </dd>
+            </div>
+          </dl>
+          <div className="contact__socials">
+            <a href="#" aria-disabled="true" onClick={(e) => e.preventDefault()}>
+              LinkedIn
+            </a>
+            <a href="#" aria-disabled="true" onClick={(e) => e.preventDefault()}>
+              Instagram
+            </a>
+          </div>
         </div>
 
-        <div className="contact-grid">
-          <div className="reveal">
-            <h3
-              style={{
-                fontFamily: "var(--font-heading), 'Cormorant Garamond', serif",
-                fontSize: "1.3rem",
-                fontWeight: 600,
-                color: "var(--white)",
-                marginBottom: "2rem",
-              }}
-            >
-              {t("Informations", "Information")}
-            </h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginBottom: "2.5rem" }}>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: "1.2rem", marginTop: 2 }}>📍</span>
-                <div>
-                  <div className="field-label">{t("Localisation", "Location")}</div>
-                  <div style={{ fontSize: "0.92rem", color: "rgba(255,255,255,0.85)" }}>Fès, Maroc</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: "1.2rem", marginTop: 2 }}>✉️</span>
-                <div>
-                  <div className="field-label">Email</div>
-                  <a href={`mailto:${EMAIL}`} style={{ fontSize: "0.92rem", color: "var(--gold-light)", wordBreak: "break-all" }}>
-                    {EMAIL}
-                  </a>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: "1.2rem", marginTop: 2 }}>🎓</span>
-                <div>
-                  <div className="field-label">{t("Formation", "Education")}</div>
-                  <div style={{ fontSize: "0.92rem", color: "rgba(255,255,255,0.85)" }}>ENCG Fès</div>
-                </div>
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <a href="#" className="social-btn" aria-label="LinkedIn">
-                in
-              </a>
-              <a href="#" className="social-btn" aria-label="Instagram">
-                IG
-              </a>
-              <a href={`mailto:${EMAIL}`} className="social-btn" aria-label="Email">
-                @
-              </a>
-            </div>
-          </div>
-
-          <form className="contact-form reveal reveal-delay-2" onSubmit={onSubmit}>
-            <div className="form-grid">
-              <div>
-                <label className="field-label" htmlFor="name">
-                  {t("Nom", "Name")}
-                </label>
-                <input
-                  id="name"
-                  className="field-input"
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(event) => setForm({ ...form, name: event.target.value })}
-                />
-              </div>
-              <div>
-                <label className="field-label" htmlFor="email">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  className="field-input"
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={(event) => setForm({ ...form, email: event.target.value })}
-                />
-              </div>
-            </div>
-            <div style={{ marginTop: "1rem" }}>
-              <label className="field-label" htmlFor="subject">
-                {t("Sujet", "Subject")}
-              </label>
+        <form className="contact__form" onSubmit={onSubmit}>
+          <div className="form-row">
+            <div className="field">
+              <label htmlFor="name">{t("Nom", "Name")}</label>
               <input
-                id="subject"
-                className="field-input"
+                id="name"
                 type="text"
                 required
-                value={form.subject}
-                onChange={(event) => setForm({ ...form, subject: event.target.value })}
+                autoComplete="name"
+                value={form.name}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
               />
             </div>
-            <div style={{ marginTop: "1rem" }}>
-              <label className="field-label" htmlFor="message">
-                {t("Message", "Message")}
-              </label>
-              <textarea
-                id="message"
-                className="field-input"
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
                 required
-                rows={5}
-                value={form.message}
-                onChange={(event) => setForm({ ...form, message: event.target.value })}
+                autoComplete="email"
+                value={form.email}
+                onChange={(event) => setForm({ ...form, email: event.target.value })}
               />
             </div>
-            <button type="submit" className="btn-primary" style={{ marginTop: "1.5rem", width: "100%", justifyContent: "center" }}>
-              {sent ? t("Message envoyé ✓", "Message sent ✓") : t("Envoyer le message", "Send message")}
-            </button>
-          </form>
-        </div>
+          </div>
+          <div className="field">
+            <label htmlFor="subject">{t("Sujet", "Subject")}</label>
+            <input
+              id="subject"
+              type="text"
+              required
+              value={form.subject}
+              onChange={(event) => setForm({ ...form, subject: event.target.value })}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="message">{t("Message", "Message")}</label>
+            <textarea
+              id="message"
+              required
+              rows={5}
+              value={form.message}
+              onChange={(event) => setForm({ ...form, message: event.target.value })}
+            />
+          </div>
+          <button type="submit" className="btn">
+            {t("Ouvrir l’email", "Open email")}
+          </button>
+        </form>
       </div>
-    </section>
+    </div>
   );
 }
 
 export function Footer() {
-  const { t } = useLang();
+  const { lang, toggleLang, t } = useLang();
 
   return (
-    <footer style={{ background: "var(--footer-bg)", padding: "2rem 0", textAlign: "center" }}>
-      <div className="container">
-        <p style={{ fontSize: "0.82rem", color: "rgba(255, 255, 255, 0.45)", letterSpacing: "0.02em" }}>
-          © 2025 Mohamed Bakkouri · {t("Master Marketing Digital", "Master Digital Marketing")} · ENCG Fès, Maroc
-        </p>
+    <footer className="site-footer site-footer--on-ink">
+      <div className="shell site-footer__links">
+        <button
+          type="button"
+          className="site-footer__link site-footer__lang"
+          onClick={toggleLang}
+          aria-label={t("Passer en anglais", "Switch to French")}
+        >
+          <TranslateIcon className="site-footer__lang-icon" />
+          <span className="site-footer__lang-flags" data-lang={lang}>
+            <LangFlag target="en" className="site-footer__lang-flag site-footer__lang-flag--en" />
+            <LangFlag target="fr" className="site-footer__lang-flag site-footer__lang-flag--fr" />
+          </span>
+        </button>
       </div>
     </footer>
   );

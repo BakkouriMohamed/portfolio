@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { flushSync } from "react-dom";
 
 export type Lang = "fr" | "en";
 
@@ -10,6 +18,10 @@ type LangContextValue = {
 
 const LangContext = createContext<LangContextValue | null>(null);
 
+function flipLang(current: Lang): Lang {
+  return current === "fr" ? "en" : "fr";
+}
+
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("fr");
 
@@ -20,7 +32,17 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const value = useMemo<LangContextValue>(
     () => ({
       lang,
-      toggleLang: () => setLang((current) => (current === "fr" ? "en" : "fr")),
+      toggleLang: () => {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const apply = () => flushSync(() => setLang(flipLang));
+
+        if (reduce || typeof document.startViewTransition !== "function") {
+          apply();
+          return;
+        }
+
+        document.startViewTransition(apply);
+      },
       t: (fr, en) => (lang === "fr" ? fr : en),
     }),
     [lang],
@@ -35,177 +57,135 @@ export function useLang() {
   return ctx;
 }
 
-export const NAV = [
-  { id: "about", fr: "À propos", en: "About" },
-  { id: "skills", fr: "Compétences", en: "Skills" },
-  { id: "projects", fr: "Projets", en: "Projects" },
-  { id: "experience", fr: "Expériences", en: "Experience" },
-  { id: "services", fr: "Services", en: "Services" },
-  { id: "contact", fr: "Contact", en: "Contact" },
+export const INDEX = [
+  { n: "00", id: "top", fr: "Faire trouver votre marque", en: "Make your brand findable" },
+  { n: "01", id: "results", fr: "Visibilité mesurable", en: "Visibility you can measure" },
+  { n: "02", id: "work", fr: "Travail déjà livré", en: "Work already delivered" },
+  { n: "03", id: "method", fr: "Comprendre, planifier, mesurer", en: "Understand, plan, measure" },
+  { n: "04", id: "path", fr: "Depuis le terrain", en: "From the field" },
+  { n: "05", id: "contact", fr: "Votre prochaine mission", en: "Your next mission" },
 ] as const;
 
-export const TRAITS = [
-  { fr: "Esprit analytique", en: "Analytical mindset" },
-  { fr: "Créativité", en: "Creativity" },
-  { fr: "Orienté résultats", en: "Results-driven" },
-  { fr: "Vision stratégique", en: "Strategic vision" },
-  { fr: "Rigueur académique", en: "Academic rigor" },
-  { fr: "Adaptabilité", en: "Adaptability" },
-];
+/** @deprecated use INDEX */
+export const NAV = INDEX.filter((item) => item.id !== "top");
 
-export const STATS = [
-  { number: "5+", fr: "Années de formation", en: "Years of study" },
-  { number: "3", fr: "Expériences pros", en: "Work experiences" },
-  { number: "+20%", fr: "Visibilité créée", en: "Visibility created" },
-  { number: "3", fr: "Langues parlées", en: "Languages spoken" },
-];
 
-export const SKILLS = [
+export const PROOF = [
   {
-    icon: "🔍",
-    name: { fr: "SEO", en: "SEO" },
-    desc: {
-      fr: "Optimisation technique et sémantique pour un meilleur positionnement naturel.",
-      en: "Technical and semantic optimization for better organic ranking.",
-    },
-    tags: ["Semrush", "Search Console", "Ahrefs"],
+    number: "+20%",
+    fr: "Visibilité UrbanFlex, SEO et contenu (juin–juil. 2025)",
+    en: "UrbanFlex visibility, SEO and content (Jun–Jul 2025)",
   },
   {
-    icon: "📢",
-    name: { fr: "Social Media", en: "Social Media" },
-    desc: {
-      fr: "Stratégie de contenu et community management sur les réseaux sociaux.",
-      en: "Content strategy and community management across social networks.",
-    },
-    tags: ["Instagram", "Meta Ads", "TikTok"],
+    number: "+15%",
+    fr: "Engagement Ghaiti Event, social (juil.–sep. 2025)",
+    en: "Ghaiti Event engagement, social (Jul–Sep 2025)",
   },
   {
-    icon: "📊",
-    name: { fr: "Analytics", en: "Analytics" },
-    desc: {
-      fr: "Analyse de données et reporting pour des décisions éclairées.",
-      en: "Data analysis and reporting for informed decisions.",
-    },
-    tags: ["GA4", "Looker Studio", "Hotjar"],
+    number: "3",
+    fr: "Missions marketing digital",
+    en: "Digital marketing missions",
   },
-  {
-    icon: "✍️",
-    name: { fr: "Création de contenu", en: "Content Creation" },
-    desc: {
-      fr: "Conception visuelle et production de contenus engageants.",
-      en: "Visual design and production of engaging content.",
-    },
-    tags: ["Canva", "CapCut", "Figma"],
-  },
-  {
-    icon: "🎯",
-    name: { fr: "Stratégie Marketing", en: "Marketing Strategy" },
-    desc: {
-      fr: "Planification et développement de stratégies marketing globales.",
-      en: "Planning and development of comprehensive marketing strategies.",
-    },
-    tags: ["SWOT", "Personas", "Customer Journey"],
-  },
-  {
-    icon: "🛍️",
-    name: { fr: "Marketing Commercial", en: "Commercial Marketing" },
-    desc: {
-      fr: "Gestion de la relation client et stratégie commerciale digitale.",
-      en: "Customer relationship management and digital commercial strategy.",
-    },
-    tags: ["Management", "Digital", "CRM"],
-  },
-];
+] as const;
 
-export const TOOLS = [
-  "Google Analytics 4",
-  "Semrush",
-  "Meta Business Suite",
-  "HubSpot",
-  "Canva Pro",
-  "WordPress",
-  "Looker Studio",
-  "Mailchimp",
-  "Notion",
-];
+export const WORK = [
+  {
+    client: "Ghmoiya",
+    image: "/images/ghmoiya-product.png",
+    meta: { fr: "Marque · figue de barbarie", en: "Brand · prickly pear" },
+    brief: {
+      fr: "Poser l’identité et le positionnement d’une marque locale de figue de barbarie.",
+      en: "Set identity and positioning for a local prickly pear brand.",
+    },
+    did: {
+      fr: "Identité visuelle, message de marque, cadrage du positionnement.",
+      en: "Visual identity, brand message, positioning frame.",
+    },
+    result: {
+      fr: "Identité et positionnement prêts à déployer.",
+      en: "Identity and positioning ready to use.",
+    },
+  },
+  {
+    client: "Ghaiti Event",
+    meta: { fr: "Événementiel · Rabat · juil.–sep. 2025", en: "Events · Rabat · Jul–Sep 2025" },
+    brief: {
+      fr: "Animer les réseaux pendant la saison événements.",
+      en: "Keep social active through the event season.",
+    },
+    did: {
+      fr: "Campagnes social media et suivi d’engagement.",
+      en: "Social campaigns and engagement tracking.",
+    },
+    result: { fr: "+15% d’engagement.", en: "+15% engagement." },
+  },
+  {
+    client: "UrbanFlex",
+    meta: {
+      fr: "Commerce · Paris / remote · juin–juil. 2025",
+      en: "Retail · Paris / remote · Jun–Jul 2025",
+    },
+    brief: {
+      fr: "Remonter la visibilité organique et le contenu.",
+      en: "Raise organic visibility and content.",
+    },
+    did: { fr: "SEO et création de contenu.", en: "SEO and content creation." },
+    result: { fr: "+20% de visibilité.", en: "+20% visibility." },
+  },
+] as const;
 
-export const EXPERIENCES: {
-  period: string;
-  title: string;
-  company: string;
-  location: string;
-  tags: string[];
-  result?: string;
-}[] = [
+export const METHOD = [
+  {
+    title: { fr: "Comprendre", en: "Understand" },
+    body: {
+      fr: "Qui vous êtes, qui vous cherche, où la visibilité peut grandir.",
+      en: "Who you are, who looks for you, where visibility can grow.",
+    },
+  },
+  {
+    title: { fr: "Planifier", en: "Plan" },
+    body: {
+      fr: "Un plan SEO, social ou contenu, avec une priorité claire.",
+      en: "One SEO, social, or content plan with a clear priority.",
+    },
+  },
+  {
+    title: { fr: "Mesurer", en: "Measure" },
+    body: {
+      fr: "Des chiffres liés à un canal et à un client, puis on ajuste.",
+      en: "Numbers tied to a channel and a client, then we adjust.",
+    },
+  },
+] as const;
+
+export const PATH = [
   {
     period: "Déc. 2025 – Fév. 2026",
-    title: "Assistant Manager",
+    title: { fr: "Assistant Manager", en: "Assistant Manager" },
     company: "Rim Cosmetic",
-    location: "Maroc",
-    tags: ["Management", "Digital", "Social Media"],
+    location: { fr: "Maroc", en: "Morocco" },
   },
   {
     period: "Juil. – Sep. 2025",
-    title: "Assistant Marketing",
+    title: { fr: "Assistant Marketing", en: "Marketing Assistant" },
     company: "Ghaiti Event",
-    location: "Rabat",
-    tags: ["Event Marketing", "Social Media", "Campagnes"],
-    result: "↗ +15% engagement",
+    location: { fr: "Rabat", en: "Rabat" },
+    result: { fr: "+15% engagement", en: "+15% engagement" },
   },
   {
     period: "Juin – Juil. 2025",
-    title: "Assistant Marketing Digital",
+    title: { fr: "Assistant Marketing Digital", en: "Digital Marketing Assistant" },
     company: "UrbanFlex",
-    location: "Paris / Remote",
-    tags: ["SEO", "Content Creation", "Remote"],
-    result: "↗ +20% visibilité",
+    location: { fr: "Paris / Remote", en: "Paris / Remote" },
+    result: { fr: "+20% visibilité", en: "+20% visibility" },
   },
-];
+] as const;
 
 export const CERTIFICATIONS = [
   { name: "Google Digital Marketing", year: "2023" },
   { name: "Meta Social Media Marketing", year: "2022" },
   { name: "HubSpot Content Marketing", year: "2023" },
   { name: "Google Analytics 4", year: "2024" },
-];
-
-export const SERVICES = [
-  {
-    icon: "📱",
-    title: { fr: "Social Media", en: "Social Media" },
-    desc: {
-      fr: "Gestion et stratégie des réseaux sociaux pour maximiser l'engagement et la visibilité de votre marque.",
-      en: "Social media management and strategy to maximize engagement and brand visibility.",
-    },
-    price: { fr: "À partir de 500 MAD/mois", en: "From 500 MAD/month" },
-  },
-  {
-    icon: "🔍",
-    title: { fr: "SEO", en: "SEO" },
-    desc: {
-      fr: "Optimisation pour les moteurs de recherche pour améliorer votre classement organique.",
-      en: "Search engine optimization to improve your organic ranking.",
-    },
-    price: { fr: "À partir de 800 MAD", en: "From 800 MAD" },
-  },
-  {
-    icon: "✍️",
-    title: { fr: "Contenu", en: "Content" },
-    desc: {
-      fr: "Création de contenus engageants et optimisés pour convertir votre audience.",
-      en: "Creation of engaging content optimized to convert your audience.",
-    },
-    price: { fr: "À partir de 300 MAD", en: "From 300 MAD" },
-  },
-  {
-    icon: "📊",
-    title: { fr: "Stratégie", en: "Strategy" },
-    desc: {
-      fr: "Audit et développement de votre stratégie marketing digitale complète.",
-      en: "Audit and development of your complete digital marketing strategy.",
-    },
-    price: { fr: "Sur devis", en: "On quote" },
-  },
-];
+] as const;
 
 export const EMAIL = "mohamedbakkouri88@gmail.com";
