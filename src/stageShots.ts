@@ -11,7 +11,7 @@ export type StageShot = {
 /** Imagery only while that section is open. Hero = Vision only. */
 export const STAGE_SHOTS: Partial<Record<StageId, StageShot>> = {
   top: {
-    src: "/images/hero-photo-no-bg.png",
+    src: "/images/hero-photo-no-bg-b&w.png",
     alt: "Mohamed Bakkouri",
     kind: "portrait",
   },
