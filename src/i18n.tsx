@@ -163,12 +163,14 @@ export const PATH = [
     period: "Déc. 2025 – Fév. 2026",
     title: { fr: "Assistant Manager", en: "Assistant Manager" },
     company: "Rim Cosmetic",
+    logo: "/images/logos/rim-cosmetic.svg",
     location: { fr: "Maroc", en: "Morocco" },
   },
   {
     period: "Juil. – Sep. 2025",
     title: { fr: "Assistant Marketing", en: "Marketing Assistant" },
     company: "Ghaiti Event",
+    logo: "/images/logos/ghaiti-event.svg",
     location: { fr: "Rabat", en: "Rabat" },
     result: { fr: "+15% engagement", en: "+15% engagement" },
   },
@@ -176,16 +178,22 @@ export const PATH = [
     period: "Juin – Juil. 2025",
     title: { fr: "Assistant Marketing Digital", en: "Digital Marketing Assistant" },
     company: "UrbanFlex",
+    logo: "/images/logos/urbanflex.svg",
     location: { fr: "Paris / Remote", en: "Paris / Remote" },
     result: { fr: "+20% visibilité", en: "+20% visibility" },
   },
 ] as const;
 
+export const EDUCATION = {
+  name: { fr: "Master Marketing Digital — ENCG Fès", en: "Master’s in Digital Marketing — ENCG Fès" },
+  logo: "/images/encg-logo.png",
+} as const;
+
 export const CERTIFICATIONS = [
-  { name: "Google Digital Marketing", year: "2023" },
-  { name: "Meta Social Media Marketing", year: "2022" },
-  { name: "HubSpot Content Marketing", year: "2023" },
-  { name: "Google Analytics 4", year: "2024" },
+  { name: "Google Digital Marketing", year: "2023", logo: "/images/logos/google.svg" },
+  { name: "Meta Social Media Marketing", year: "2022", logo: "/images/logos/meta.svg" },
+  { name: "HubSpot Content Marketing", year: "2023", logo: "/images/logos/hubspot.svg" },
+  { name: "Google Analytics 4", year: "2024", logo: "/images/logos/google.svg" },
 ] as const;
 
 export const EMAIL = "mohamedbakkouri88@gmail.com";

@@ -1,3 +1,6 @@
+import { MethodStage } from "./Method";
+import { PathStage } from "./Path";
+import { ProofStage } from "./Proof";
 import { STAGE_LAYERS, STAGE_SHOTS, type StageId } from "./stageShots";
 import { WorkCarousel } from "./Work";
 
@@ -8,13 +11,26 @@ type Props = {
 export function Stage({ openId }: Props) {
   const active = openId ? STAGE_SHOTS[openId] : undefined;
   const workOn = openId === "work";
+  const resultsOn = openId === "results";
+  const methodOn = openId === "method";
+  const pathOn = openId === "path";
+  const panelOn = workOn || resultsOn || methodOn || pathOn;
   const shotOn = Boolean(active);
 
   return (
     <aside
-      className={`stage${shotOn || workOn ? " stage--on" : ""}${workOn ? " stage--carousel" : ""}`}
-      aria-hidden={workOn ? undefined : true}
-      data-stage-panel={workOn ? "" : undefined}
+      className={[
+        "stage",
+        shotOn || panelOn ? "stage--on" : "",
+        workOn ? "stage--carousel" : "",
+        resultsOn ? "stage--metrics" : "",
+        methodOn ? "stage--method" : "",
+        pathOn ? "stage--path" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      aria-hidden={panelOn ? undefined : true}
+      data-stage-panel={panelOn ? "" : undefined}
     >
       <div className="stage__frame">
         {STAGE_LAYERS.map((shot) => {
@@ -31,6 +47,9 @@ export function Stage({ openId }: Props) {
         })}
       </div>
       {workOn ? <WorkCarousel className="work-carousel--stage" /> : null}
+      {resultsOn ? <ProofStage /> : null}
+      {methodOn ? <MethodStage /> : null}
+      {pathOn ? <PathStage /> : null}
     </aside>
   );
 }

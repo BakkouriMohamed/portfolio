@@ -51,6 +51,15 @@ export function Browse() {
   }
 
   useEffect(() => {
+    const root = document.documentElement;
+    if (openId) root.dataset.section = openId;
+    else delete root.dataset.section;
+    return () => {
+      delete root.dataset.section;
+    };
+  }, [openId]);
+
+  useEffect(() => {
     if (!openId) return;
 
     const onPointerDown = (event: PointerEvent) => {
@@ -92,7 +101,9 @@ export function Browse() {
     <PanelOpenProvider value={openPanel}>
       <Navbar />
       <div className="app-main">
-        <div className={`browse-layout${openId === "work" ? " browse-layout--work" : ""}`}>
+        <div
+          className={`browse-layout${openId === "work" ? " browse-layout--work" : ""}${openId === "results" ? " browse-layout--results" : ""}${openId === "method" ? " browse-layout--method" : ""}${openId === "path" ? " browse-layout--path" : ""}`}
+        >
           <ScrollArea
             className="browse-scroll"
             viewportClassName="scroll-fade"
