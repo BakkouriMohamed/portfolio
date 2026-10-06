@@ -102,7 +102,7 @@ export function Browse() {
       <Navbar />
       <div className="app-main">
         <div
-          className={`browse-layout${openId === "work" ? " browse-layout--work" : ""}${openId === "results" ? " browse-layout--results" : ""}${openId === "method" ? " browse-layout--method" : ""}${openId === "path" ? " browse-layout--path" : ""}`}
+          className={`browse-layout${openId === "work" ? " browse-layout--work" : ""}${openId === "results" ? " browse-layout--results" : ""}${openId === "method" ? " browse-layout--method" : ""}${openId === "path" ? " browse-layout--path" : ""}${openId === "contact" ? " browse-layout--contact" : ""}`}
         >
           <ScrollArea
             className="browse-scroll"

@@ -15,11 +15,13 @@ export function MethodStage() {
             className={`method-stage__item ${BENTO[i] ?? ""}`}
             style={{ "--method-i": i } as CSSProperties}
           >
-            <strong className="method-stage__n">{String(i + 1).padStart(2, "0")}</strong>
             <div className="method-stage__copy">
               <h4 className="method-stage__title">{lang === "fr" ? step.title.fr : step.title.en}</h4>
               <p className="method-stage__label">{lang === "fr" ? step.body.fr : step.body.en}</p>
             </div>
+            <strong className="method-stage__n" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </strong>
           </li>
         ))}
       </ol>
@@ -41,11 +43,13 @@ export function MethodBody() {
       <ol className="method-stage__bento method-stage__bento--inline">
         {METHOD.map((step, i) => (
           <li key={step.title.en} className={`method-stage__item ${BENTO[i] ?? ""}`}>
-            <strong className="method-stage__n">{String(i + 1).padStart(2, "0")}</strong>
             <div className="method-stage__copy">
               <h4 className="method-stage__title">{lang === "fr" ? step.title.fr : step.title.en}</h4>
               <p className="method-stage__label">{lang === "fr" ? step.body.fr : step.body.en}</p>
             </div>
+            <strong className="method-stage__n" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </strong>
           </li>
         ))}
       </ol>

@@ -1,3 +1,4 @@
+import { ContactStage } from "./Contact";
 import { MethodStage } from "./Method";
 import { PathStage } from "./Path";
 import { ProofStage } from "./Proof";
@@ -14,7 +15,8 @@ export function Stage({ openId }: Props) {
   const resultsOn = openId === "results";
   const methodOn = openId === "method";
   const pathOn = openId === "path";
-  const panelOn = workOn || resultsOn || methodOn || pathOn;
+  const contactOn = openId === "contact";
+  const panelOn = workOn || resultsOn || methodOn || pathOn || contactOn;
   const shotOn = Boolean(active);
 
   return (
@@ -26,6 +28,7 @@ export function Stage({ openId }: Props) {
         resultsOn ? "stage--metrics" : "",
         methodOn ? "stage--method" : "",
         pathOn ? "stage--path" : "",
+        contactOn ? "stage--contact" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -50,6 +53,7 @@ export function Stage({ openId }: Props) {
       {resultsOn ? <ProofStage /> : null}
       {methodOn ? <MethodStage /> : null}
       {pathOn ? <PathStage /> : null}
+      {contactOn ? <ContactStage /> : null}
     </aside>
   );
 }
